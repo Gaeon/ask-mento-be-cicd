@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sk031-ask-mento-be
+  namespace: skala-practice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sk031-ask-mento-be
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '8081'
+        prometheus.io/path: '/actuator/prometheus'
+        update: 5e59d2ee47d1c85987208efb0e91a711
+      labels:
+        app: sk031-ask-mento-be
+    spec:
+      serviceAccountName: default
+      containers:
+      - name: ask-mento-be
+        image: amdp-registry.skala-ai.com/skala25a/sk031-ask-mento-be:1.0.0
+        imagePullPolicy: Always
+        env:
+        - name: LOGGING_LEVEL
+          value: DEBUG
+        - name: USER_NAME
+          value: sk031
+        - name: NAMESPACE
+          value: skala-practice
+        - name: SPRING_PROFILES_ACTIVE
+          value: prod
+        - name: SPRING_DATASOURCE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: sk031-ask-mento-be-config
+              key: SPRING_DATASOURCE_URL
+        - name: SPRING_DATASOURCE_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              name: sk031-ask-mento-be-config
+              key: SPRING_DATASOURCE_USERNAME
+        envFrom:
+        - secretRef:
+            name: sk031-ask-mento-be-secrets
