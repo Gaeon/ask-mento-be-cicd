@@ -42,6 +42,11 @@ spec:
             configMapKeyRef:
               name: sk031-ask-mento-be-config
               key: SPRING_DATASOURCE_USERNAME
+        - name: SPRING_DATASOURCE_DRIVER
+          valueFrom:
+            configMapKeyRef:
+              name: sk031-ask-mento-be-config
+              key: SPRING_DATASOURCE_DRIVER
         envFrom:
         - secretRef:
             name: sk031-ask-mento-be-secrets
